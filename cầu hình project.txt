@@ -1,0 +1,327 @@
+R12:
+ip dhcp excluded-address 10.10.10.1 10.10.10.20
+ip dhcp excluded-address 10.10.20.1 10.10.20.20
+ip dhcp excluded-address 10.10.30.1 10.10.30.20
+ip dhcp excluded-address 10.10.40.1 10.10.40.20
+ip dhcp excluded-address 10.10.50.1 10.10.50.20
+ip dhcp excluded-address 10.10.60.1 10.10.60.20
+ip dhcp excluded-address 10.10.70.1 10.10.70.20
+!         
+ip dhcp pool vlan10
+ network 10.10.10.0 255.255.255.0
+ default-router 10.10.10.1 
+ dns-server 10.10.10.1 
+!         
+ip dhcp pool vlan20
+ network 10.10.20.0 255.255.255.0
+ default-router 10.10.20.1 
+ dns-server 10.10.20.1 
+!         
+ip dhcp pool vlan30
+ network 10.10.30.0 255.255.255.0
+ default-router 10.10.30.1 
+ dns-server 10.10.30.1 
+!         
+ip dhcp pool vlan40
+ network 10.10.40.0 255.255.255.0
+ default-router 10.10.40.1 
+ dns-server 10.10.40.1 
+!         
+ip dhcp pool vlan50
+ network 10.10.50.0 255.255.255.0
+ default-router 10.10.50.1 
+ dns-server 10.10.50.1 
+!         
+ip dhcp pool vlan60
+ network 10.10.60.0 255.255.255.0
+ default-router 10.10.60.1 
+ dns-server 10.10.60.1 
+!         
+ip dhcp pool vlan 70
+ network 10.10.70.0 255.255.255.0
+ default-router 10.10.70.1 
+ dns-server 10.10.70.1 
+!         
+!         
+!         
+no ip domain lookup
+ip name-server 8.8.8.8
+ip name-server 1.1.1.1
+ip cef    
+no ipv6 cef
+!         
+multilink bundle-name authenticated
+! 
+redundancy
+!
+interface Ethernet0/0
+ no ip address
+ duplex auto
+!         
+interface Ethernet0/0.10
+ encapsulation dot1Q 10
+ ip address 10.10.10.1 255.255.255.0
+ ip ospf 1 area 0
+!         
+interface Ethernet0/0.20
+ encapsulation dot1Q 20
+ ip address 10.10.20.1 255.255.255.0
+ ip ospf 1 area 0
+!         
+interface Ethernet0/1
+ no ip address
+ duplex auto
+!         
+interface Ethernet0/1.30
+ encapsulation dot1Q 30
+ ip address 10.10.30.1 255.255.255.0
+ ip ospf 1 area 0
+!         
+interface Ethernet0/1.40
+ encapsulation dot1Q 40
+ ip address 10.10.40.1 255.255.255.0
+ ip ospf 1 area 0
+!         
+interface Ethernet0/2
+ no ip address
+ duplex auto
+!         
+interface Ethernet0/2.50
+ encapsulation dot1Q 50
+ ip address 10.10.50.1 255.255.255.0
+ ip ospf 1 area 0
+!         
+interface Ethernet0/2.60
+ encapsulation dot1Q 60
+ ip address 10.10.60.1 255.255.255.0
+ ip ospf 1 area 0
+!         
+interface Ethernet0/2.70
+ encapsulation dot1Q 70
+ ip address 10.10.70.1 255.255.255.0
+ ip ospf 1 area 0
+!         
+interface Ethernet0/3
+ ip address 10.10.0.1 255.255.255.0
+ ip ospf 1 area 0
+ duplex auto
+!         
+router ospf 1
+ router-id 1.1.1.1
+ passive-interface default
+ no passive-interface Ethernet0/3
+ network 10.10.0.0 0.0.255.255 area 0
+!         
+ip forward-protocol nd
+!         
+!         
+no ip http server
+no ip http secure-server
+ip dns server
+ip route 0.0.0.0 0.0.0.0 10.10.0.2   
+ipv6 ioam timestamp
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login    
+ transport input none
+
+
+ ISP
+
+ interface Ethernet0/0
+ ip address 200.0.1.1 255.255.255.0
+ duplex auto
+!         
+interface Ethernet0/1
+ ip address dhcp
+ duplex auto
+!         
+interface Ethernet0/2
+ no ip address
+ shutdown 
+ duplex auto
+!         
+interface Ethernet0/3
+ no ip address
+ shutdown 
+ duplex auto
+!         
+ip forward-protocol nd
+!         
+!         
+no ip http server
+no ip http secure-server
+!         
+ipv6 ioam timestamp
+!                 
+control-plane
+!               
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login    
+ transport input none
+!         
+ntp server pool.ntp.org
+ntp server 34.208.249.133
+
+
+
+SW1
+interface Ethernet0/0
+ switchport access vlan 10
+ switchport mode access
+!         
+interface Ethernet0/1
+ switchport access vlan 20
+ switchport mode access
+!         
+interface Ethernet0/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!         
+interface Ethernet0/3
+!         
+ip forward-protocol nd
+!         
+ip http server
+ip http secure-server
+!         
+ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+!         
+!         
+!         
+!         
+!         
+control-plane
+!         
+!         
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login    
+!         
+!         
+!         
+end      
+
+SW2: 
+interface Ethernet0/0
+ switchport access vlan 30
+ switchport mode access
+!         
+interface Ethernet0/1
+ switchport access vlan 40
+ switchport mode access
+!         
+interface Ethernet0/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!         
+interface Ethernet0/3
+!         
+ip forward-protocol nd
+!         
+ip http server
+ip http secure-server
+!         
+ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+!                  
+control-plane
+!         
+!         
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login    
+!         
+!         
+!         
+end  
+
+SW3
+interface Ethernet0/0
+ switchport access vlan 50
+ switchport mode access
+!         
+interface Ethernet0/1
+ switchport access vlan 60
+ switchport mode access
+!         
+interface Ethernet0/2
+ switchport access vlan 70
+ switchport mode access
+!         
+interface Ethernet0/3
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!         
+ip forward-protocol nd
+!         
+ip http server
+ip http secure-server
+!         
+ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+!         
+!         
+!         
+!         
+!         
+control-plane
+!         
+!         
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login    
+!         
+!         
+!         
+end 
+
+
+
+
+SW-Server:
+interface Ethernet0/0
+ switchport mode access
+!         
+interface Ethernet0/1
+ switchport mode access
+!         
+interface Ethernet0/2
+!         
+interface Ethernet0/3
+!         
+ip forward-protocol nd
+!         
+ip http server
+ip http secure-server
+!         
+ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+!         
+!         
+!         
+!         
+!         
+control-plane
+!         
+!         
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login    
+!         
+!         
+!  
